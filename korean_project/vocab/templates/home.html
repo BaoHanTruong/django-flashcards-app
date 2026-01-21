@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học tiếng Hàn - Danh sách chủ đề</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; }
+        header { background: #e74c3c; width: 100%; color: white; padding: 40px 0; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { margin: 0; font-size: 2.5em; }
+        
+        .container { max-width: 1000px; width: 90%; margin-top: 40px; }
+        .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        
+        .topic-card { 
+            background: white; padding: 30px 20px; border-radius: 15px; text-align: center; 
+            text-decoration: none; color: #333; font-weight: bold; font-size: 1.2em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.3s ease;
+            border-bottom: 5px solid #3498db;
+        }
+        
+        .topic-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: #3498db; color: white;
+        }
+
+        .footer { margin-top: 50px; color: #7f8c8d; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>안녕하세요!</h1>
+        <p>Chọn một chủ đề để bắt đầu học</p>
+    </header>
+
+    <div class="container">
+        <div class="topic-grid">
+            {% for topic in topics %}
+                <a href="{% url 'flashcards' topic.id %}" class="topic-card">
+                    {{ topic.name }}
+                </a>
+            {% empty %}
+                <p style="text-align: center; width: 100%;">Bạn chưa tạo chủ đề nào. Hãy vào trang Admin để thêm nhé!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="footer">
+        Dự án học tiếng Hàn cá nhân - 2026
+    </div>
+
+</body>
+</html>
