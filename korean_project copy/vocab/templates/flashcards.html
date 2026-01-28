@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học tiếng Hàn - {{ topic.name }}</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --success: #2ecc71;
+            --dark: #2c3e50;
+            --light: #f4f7f6;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: var(--light); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            min-height: 100vh; margin: 0; 
+        }
+
+        /* Thanh tiến trình */
+        .header-info { width: 350px; margin-bottom: 10px; text-align: left; color: var(--dark); font-weight: bold; }
+        .progress-container { width: 350px; height: 10px; background: #dfe6e9; border-radius: 5px; margin-bottom: 25px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); width: {{ progress }}%; transition: width 0.4s ease; }
+
+        /* Flashcard Container */
+        .flashcard { width: 350px; height: 450px; perspective: 1000px; cursor: pointer; }
+        .flashcard-inner { 
+            position: relative; width: 100%; height: 100%; 
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            transform-style: preserve-3d; 
+        }
+        .is-flipped { transform: rotateY(180deg); }
+
+        .front, .back { 
+            position: absolute; width: 100%; height: 100%; 
+            backface-visibility: hidden; border-radius: 30px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); background: white; 
+        }
+
+        .back { background: var(--primary); color: white; transform: rotateY(180deg); padding: 30px; box-sizing: border-box; }
+
+        /* Typography */
+        .korean-word { font-size: 65px; margin: 0; color: var(--dark); }
+        .meaning-text { font-size: 40px; font-weight: bold; margin: 10px 0; }
+        
+        /* Audio Button */
+        .audio-btn {
+            background: #f0f0f0; border-radius: 50%; width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 20px; transition: 0.2s;
+        }
+        .audio-btn:hover { background: #e0e0e0; transform: scale(1.1); }
+
+        /* Navigation Buttons */
+        .nav-group { display: flex; gap: 15px; margin-top: 30px; width: 350px; }
+        .btn { 
+            flex: 1; padding: 15px; border-radius: 15px; text-decoration: none; 
+            text-align: center; font-weight: bold; color: white; background: var(--dark); 
+            transition: 0.3s; font-size: 16px;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn.disabled { background: #b2bec3; pointer-events: none; }
+        
+        .home-link { margin-top: 25px; color: var(--secondary); text-decoration: none; font-size: 14px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+    <div class="header-info">{{ topic.name }} ({{ index|add:1 }}/{{ total }})</div>
+    
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <div class="flashcard" id="card" onclick="toggleFlip()">
+        <div class="flashcard-inner" id="cardInner">
+            <div class="front">
+                <div class="audio-btn" onclick="speak(event)">🔊</div>
+                <h1 class="korean-word">{{ word.word }}</h1>
+                <p style="color: #bdc3c7; font-size: 14px; margin-top: 30px;">Tap to flip card</p>
+            </div>
+            <div class="back">
+                <p style="font-size: 18px; opacity: 0.9;">Meaning:</p>
+                <div class="meaning-text">{{ word.meaning }}</div>
+                <div style="width: 50px; height: 4px; background: white; margin-top: 20px; border-radius: 2px; opacity: 0.5;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-group">
+        <a href="?index={{ prev_index }}" class="btn {% if index <= 0 %}disabled{% endif %}">← Previous</a>
+        <a href="?index={{ next_index }}" class="btn {% if index >= total|add:'-1' %}disabled{% endif %}">Next →</a>
+    </div>
+
+    <a href="{% url 'home' %}" class="home-link">← Back to Topics</a>
+
+    <script>
+        function toggleFlip() {
+            document.getElementById('cardInner').classList.toggle('is-flipped');
+        }
+
+        function speak(event) {
+            if (event) event.stopPropagation();
+            
+            window.speechSynthesis.cancel();
+
+            const text = "{{ word.word }}";
+            const msg = new SpeechSynthesisUtterance(text);
+            const voices = window.speechSynthesis.getVoices();
+            
+            let femaleVoice = voices.find(v => (v.lang === 'ko-KR' || v.lang.includes('ko')) && 
+                                            (v.name.includes('Female') || v.name.includes('Google') || v.name.includes('Yuna')));
+
+            if (!femaleVoice) {
+                femaleVoice = voices.find(v => v.lang === 'ko-KR' || v.lang.includes('ko'));
+            }
+
+            if (femaleVoice) {
+                msg.voice = femaleVoice;
+            }
+            
+            msg.lang = 'ko-KR';
+            msg.rate = 0.9;  
+            msg.pitch = 1.2;
+
+            window.speechSynthesis.speak(msg);
+        }
+
+        window.speechSynthesis.getVoices();
+    </script>
+</body>
+</html>

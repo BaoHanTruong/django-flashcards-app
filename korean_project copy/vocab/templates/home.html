@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Lingo | Learn Korean Daily</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --bg-color: #f5f7fa;
+            --text-dark: #2d3436;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--text-dark);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #636e72;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Topic Grid */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Modern Topic Card */
+        .topic-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .topic-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            background: #eef2f7;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .topic-card:hover .topic-icon {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .topic-name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .word-count {
+            font-size: 0.9rem;
+            color: #b2bec3;
+        }
+
+        .btn-start {
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>🇰🇷 K-Lingo: Learn Korean</h1>
+    <p class="subtitle">Select a topic to start practicing today!</p>
+
+    <div class="topic-grid">
+        {% for topic in topics %}
+        <a href="{% url 'flashcards' topic.id %}" class="topic-card">
+            <div class="topic-icon">📚</div>
+            <div class="topic-name">{{ topic.name }}</div>
+            <div class="word-count">{{ topic.vocabulary_set.count }} Vocabularies</div>
+            <div class="btn-start">Start Learning</div>
+        </a>
+        {% empty %}
+            <p>No topics available yet.</p>
+        {% endfor %}
+    </div>
+
+    <footer style="margin-top: 60px; color: #b2bec3; font-size: 0.8rem;">
+        © 2026 Korean Flashcards Project | K-Lingo
+    </footer>
+
+</body>
+</html>
