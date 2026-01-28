@@ -3,10 +3,6 @@
 import os
 import sys
 
-#username:truongbaohan
-#pass:Tbh150106
-#link: https://truongbaohan.pythonanywhere.com
-
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
@@ -19,7 +15,6 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
-
 
 if __name__ == '__main__':
     main()
